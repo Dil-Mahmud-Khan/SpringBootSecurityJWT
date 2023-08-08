@@ -24,7 +24,6 @@ public class HomeController {
         return userService.getUsers();
     }
 
-
     @GetMapping("/current-user")
     public String getLoggedInUser(Principal principal){
         return principal.getName();
