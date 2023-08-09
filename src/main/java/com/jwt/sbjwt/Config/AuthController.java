@@ -4,10 +4,13 @@ package com.jwt.sbjwt.Config;
 import com.jwt.sbjwt.Model.JwtRequest;
 import com.jwt.sbjwt.Model.JwtResponse;
 import com.jwt.sbjwt.Security.JwtHelper;
+import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,20 +18,23 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.management.remote.JMXAuthenticator;
-import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/auth")
+
+
 public class AuthController {
     @Autowired
     private UserDetailsService userDetailsService;
+
+    @Autowired
+    private AuthenticationManager manager;
 
 
     @Autowired
     private JwtHelper helper;
 
-
-    private Logger logger= (Logger) LoggerFactory.getLogger(AuthController.class);
+    private Logger logger = LoggerFactory.getLogger(AuthController.class);
 
 
     @PostMapping("/login")
@@ -50,11 +56,6 @@ public class AuthController {
 
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(email, password);
         try {
-
-            ///there is a problem
-            //try to solve it dil
-            //no further without it
-            JMXAuthenticator manager = null;
             manager.authenticate(authentication);
 
 
@@ -66,6 +67,9 @@ public class AuthController {
 
     @ExceptionHandler(BadCredentialsException.class)
     public String exceptionHandler() {
+
         return "Credentials Invalid !!";
     }
+
+
 }
